@@ -1,0 +1,2 @@
+class DebuggerMiddleware(object):
+    pass
