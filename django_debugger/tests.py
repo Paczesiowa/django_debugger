@@ -1,6 +1,6 @@
-from django.test import TestCase
 import sys
 
+from django.test import TestCase
 from django_debugger.tracebacks import TraceBacks
 
 
