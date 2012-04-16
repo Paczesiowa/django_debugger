@@ -1,16 +1,22 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
-
 from django.test import TestCase
+import sys
+
+from django_debugger.tracebacks import TraceBacks
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+class TraceBacksTest(TestCase):
+
+    def test_tracebacks(self):
+        tbs = TraceBacks()
+        tbs2 = TraceBacks()
+        self.assertEqual(id(tbs), id(tbs2))
+
+        try:
+            raise Exception()
+        except:
+            _, _, tb = sys.exc_info()
+
+        hash_ = tbs.add_traceback(tb)
+        self.assertEqual(type(hash_), str)
+        self.assertEqual(id(tb), id(tbs.get_traceback(hash_)))
+        self.assertIsNone(tbs.get_traceback('foo'))
