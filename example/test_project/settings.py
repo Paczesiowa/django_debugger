@@ -1,6 +1,6 @@
 DEBUG = True
 
-TEMPLATE_LOADERS = ('django.template.loaders.filesystem.Loader',)
+TEMPLATE_LOADERS = ('django.template.loaders.app_directories.Loader',)
 
 MIDDLEWARE_CLASSES = ('django.middleware.common.CommonMiddleware',
                       'django_debugger.middleware.DebuggerMiddleware',
