@@ -4,12 +4,10 @@ from django.test import TestCase
 from django_debugger.tracebacks import TraceBacks
 
 
-class TraceBacksTest(TestCase):
+class DjangoDebuggerTest(TestCase):
 
     def test_tracebacks(self):
         tbs = TraceBacks()
-        tbs2 = TraceBacks()
-        self.assertEqual(id(tbs), id(tbs2))
 
         try:
             raise Exception()
