@@ -1,8 +1,8 @@
 import sys
 
-from django_debugger.views import view_traceback
-from django_debugger.tracebacks import TraceBacks
 from django.conf import settings
+from django_debugger.tracebacks import TraceBacks
+from django_debugger.views import view_traceback
 
 
 class DebuggerMiddlewareState(object):

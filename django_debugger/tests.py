@@ -4,8 +4,8 @@ from re import match
 from django.conf import settings
 from django.test import TestCase
 from django.test.client import Client, RequestFactory
-from django_debugger.tracebacks import TraceBacks
 from django_debugger.middleware import DebuggerMiddleware
+from django_debugger.tracebacks import TraceBacks
 
 
 class DjangoDebuggerTest(TestCase):
