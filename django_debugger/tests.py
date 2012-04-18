@@ -40,11 +40,8 @@ class DjangoDebuggerTest(WebTest):
         self.assertTrue(bool(re_match))
 
         settings.DEBUG = False
-
-        try:
-            response = self.app.get('/example1')
-        except Exception as e:
-            self.assertEqual(e.message, 'oh noez')
+        self.assertRaisesRegexp(Exception, 'oh noez',
+                                self.app.get, '/example1')
         settings.DEBUG = True
 
     def test_middleware_state(self):
