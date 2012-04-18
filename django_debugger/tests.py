@@ -12,6 +12,9 @@ class DjangoDebuggerTest(WebTest):
 
     setup_auth = False
 
+    def setUp(self):
+        settings.DEBUG = True
+
     def test_tracebacks(self):
         tbs = TraceBacks()
         self.assertEqual(tbs.number_of_tracebacks(), 0)
@@ -30,7 +33,6 @@ class DjangoDebuggerTest(WebTest):
         self.assertIsNone(tbs.get_traceback('foo'))
 
     def test_middleware_response(self):
-        settings.DEBUG = True
         response = self.app.get('/example1', status=500)
         debug_url = response.headers['X-Debug-URL']
         re_match = match('http://localhost:80/debug/view_traceback/[a-z0-9]+',
@@ -46,7 +48,6 @@ class DjangoDebuggerTest(WebTest):
         settings.DEBUG = True
 
     def test_middleware_state(self):
-        settings.DEBUG = True
         request = RequestFactory().get('/example1')
 
         dbg_middleware = DebuggerMiddleware()
