@@ -2,13 +2,15 @@ import sys
 from re import match
 
 from django.conf import settings
-from django.test import TestCase
-from django.test.client import Client, RequestFactory
+from django_webtest import WebTest
+from django.test.client import RequestFactory
 from django_debugger.middleware import DebuggerMiddleware
 from django_debugger.tracebacks import TraceBacks
 
 
-class DjangoDebuggerTest(TestCase):
+class DjangoDebuggerTest(WebTest):
+
+    setup_auth = False
 
     def test_tracebacks(self):
         tbs = TraceBacks()
@@ -29,16 +31,16 @@ class DjangoDebuggerTest(TestCase):
 
     def test_middleware_response(self):
         settings.DEBUG = True
-        response = Client().get('/example1')
-        self.assertEqual(response.status_code, 500)
-        debug_url = response['X-Debug-URL']
-        re_match = match('http://testserver/debug/view_traceback/[a-z0-9]+',
+        response = self.app.get('/example1', status=500)
+        debug_url = response.headers['X-Debug-URL']
+        re_match = match('http://localhost:80/debug/view_traceback/[a-z0-9]+',
                          debug_url)
         self.assertTrue(bool(re_match))
 
         settings.DEBUG = False
+
         try:
-            response = Client().get('/example1')
+            response = self.app.get('/example1')
         except Exception as e:
             self.assertEqual(e.message, 'oh noez')
         settings.DEBUG = True
