@@ -1,8 +1,21 @@
+import inspect
 import sys
 
 from django.conf import settings
 from django_debugger.tracebacks import TraceBacks
 from django_debugger.views import view_traceback
+
+
+def is_internal_exception(traceback):
+    ''' Returns True if current exception traceback was thrown from inside
+        django_debugger application.
+    '''
+    frames = inspect.getinnerframes(traceback)
+    for frame in frames:
+        filename = frame[1]
+        if filename.endswith('/django_debugger/views.py'):
+            return True
+    return False
 
 
 class DebuggerMiddlewareState(object):
@@ -39,5 +52,9 @@ class DebuggerMiddleware(object):
             return None
 
         _, _, tb = sys.exc_info()
+
+        if is_internal_exception(tb):
+            return None
+
         traceback_hash = self.state.tracebacks.add_traceback(tb)
         return view_traceback(request, traceback_hash)

@@ -67,3 +67,8 @@ class DjangoDebuggerTest(WebTest):
             self.assertEqual(tb, tb2)
             self.assertEqual(1, dbg_middleware.state.tracebacks\
                                               .number_of_tracebacks())
+
+    def test_inside_exceptions(self):
+        self.assertRaisesRegexp(Exception, 'I failed',
+                                self.app.get, '/debug/this_always_fails',
+                                status=500)
