@@ -1,0 +1,4 @@
+* clean evalcontext output for expressions that raise exceptions
+* test eval_expr with expressions using db
+* should eval_expr return mime type json?
+* use code coverage for tests
