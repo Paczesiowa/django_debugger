@@ -106,8 +106,9 @@ class DjangoDebuggerTest(WebTest):
         test_expr(0, '2+2', '4')
         test_expr(1, 'example1_view_local_var', "'local in example1()'")
         test_expr(2, 'foo_local_var', "'local in foo()'")
-        test_expr(2, 'from test_app.models import SomeModel', "")
-        test_expr(2, 'SomeModel.objects.all()[0].field', "u'test'")
+        test_expr(1, 'SomeModel.objects.all()[0].field', "u'test'")
+        test_expr(1, 'from decimal import Decimal', "")
+        test_expr(1, 'str(Decimal(0))', "'0'")
 
     def test_eval_expr_bad_requests(self):
         response = self.app.get('/example1', status=500)

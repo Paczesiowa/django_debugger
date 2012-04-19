@@ -1,4 +1,3 @@
 * clean evalcontext output for expressions that raise exceptions
-* research adding imported things to scope of evaluated expression
 * should eval_expr return mime type json?
 * use code coverage for tests
