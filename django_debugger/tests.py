@@ -2,10 +2,10 @@ import sys
 from re import match
 
 from django.conf import settings
-from django_webtest import WebTest
 from django.test.client import RequestFactory
 from django_debugger.middleware import DebuggerMiddleware
 from django_debugger.tracebacks import TraceBacks
+from django_webtest import WebTest
 
 
 class DjangoDebuggerTest(WebTest):
