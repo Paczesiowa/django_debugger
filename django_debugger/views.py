@@ -40,12 +40,14 @@ def eval_expr(request):
         raise Exception('Missing traceback_hash parameter')
     if traceback_hash == '':
         raise Exception('Empty traceback_hash parameter')
-    traceback = request.debugger_middleware_state.tracebacks\
-                       .get_traceback(traceback_hash)
-    if traceback is None:
+    tb_and_exc = request.debugger_middleware_state.tracebacks\
+                        .get_traceback(traceback_hash)
+    if tb_and_exc is None:
         err_msg = 'No previously recorded exception'
         err_msg += 'trace matching traceback hash: ' + traceback_hash
         raise Exception(err_msg)
+
+    traceback, _ = tb_and_exc
 
     frame_number = request.GET.get('frame_number')
     if frame_number is None:

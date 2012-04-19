@@ -20,17 +20,19 @@ class DjangoDebuggerTest(WebTest):
         tbs = TraceBacks()
         self.assertEqual(tbs.number_of_tracebacks(), 0)
 
+        exc = Exception()
         try:
-            raise Exception()
+            raise exc
         except:
             _, _, tb = sys.exc_info()
 
-        hash_ = tbs.add_traceback(tb)
+        hash_ = tbs.add_traceback(tb, exc)
         hash2 = TraceBacks.traceback_hash(tb)
         self.assertEqual(hash_, hash2)
         self.assertEqual(tbs.number_of_tracebacks(), 1)
         self.assertEqual(type(hash_), str)
-        self.assertEqual(id(tb), id(tbs.get_traceback(hash_)))
+        self.assertEqual(id(tb), id(tbs.get_traceback(hash_)[0]))
+        self.assertEqual(id(exc), id(tbs.get_traceback(hash_)[1]))
         self.assertIsNone(tbs.get_traceback('foo'))
 
     def test_middleware_response(self):
@@ -64,8 +66,10 @@ class DjangoDebuggerTest(WebTest):
             dbg_middleware.process_exception(request, e)
             traceback_hash = \
                 dbg_middleware.state.tracebacks.traceback_hash(tb)
-            tb2 = dbg_middleware.state.tracebacks.get_traceback(traceback_hash)
+            tb2, exc2 = \
+                dbg_middleware.state.tracebacks.get_traceback(traceback_hash)
             self.assertEqual(tb, tb2)
+            self.assertEqual(e, exc2)
             self.assertEqual(1, dbg_middleware.state.tracebacks\
                                               .number_of_tracebacks())
 

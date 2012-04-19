@@ -56,5 +56,5 @@ class DebuggerMiddleware(object):
         if is_internal_exception(tb):
             return None
 
-        traceback_hash = self.state.tracebacks.add_traceback(tb)
+        traceback_hash = self.state.tracebacks.add_traceback(tb, exception)
         return view_traceback(request, traceback_hash)

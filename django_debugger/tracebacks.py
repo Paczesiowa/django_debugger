@@ -14,18 +14,18 @@ class TraceBacks(object):
         md5.update(str(hash(traceback)))
         return md5.hexdigest()
 
-    def add_traceback(self, traceback):
+    def add_traceback(self, traceback, exception):
         '''
-        Adds an exception traceback, and returns str with unique id
-        for this traceback.
+        Adds an exception traceback (including exception),
+        and returns str with unique id for this traceback.
         '''
         traceback_hash = self.traceback_hash(traceback)
-        self._tracebacks[traceback_hash] = traceback
+        self._tracebacks[traceback_hash] = (traceback, exception)
         return traceback_hash
 
     def get_traceback(self, traceback_hash):
         '''
-        Returns previously added traceback.
+        Returns tuple with previously added traceback and its exception.
         traceback_hash is a str returned by add_traceback().
         Returns None, if there's no traceback with provided traceback_hash.
         '''
