@@ -12,9 +12,3 @@ DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3',
 ROOT_URLCONF = 'test_project.urls'
 
 INSTALLED_APPS = ('django_debugger', 'test_app')
-
-TEST_RUNNER = 'test_project.test_runner_with_coverage.CoverageTestRunner'
-COVERAGE_MODULES = ['django_debugger.middleware',
-                    'django_debugger.views',
-                    'django_debugger.utils',
-                    'django_debugger.tracebacks']
