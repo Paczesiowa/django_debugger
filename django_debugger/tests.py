@@ -2,12 +2,12 @@ import sys
 import urllib
 from re import match
 
+import django_debugger.utils
 from django.conf import settings
 from django.test.client import RequestFactory
 from django_debugger.doctest_finder import all_doctests
 from django_debugger.middleware import DebuggerMiddleware
 from django_debugger.tracebacks import TraceBacks
-import django_debugger.utils
 from django_webtest import WebTest
 
 
