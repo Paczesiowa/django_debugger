@@ -32,8 +32,6 @@ class EvalContext(object):
             try:
                 code = compile(s, '<web>', "single", 0, 1)
                 exec code in self.namespace, self.globs
-            except KeyboardInterrupt:
-                raise
             except:
                 traceback.print_exc(file=out)
         finally:
