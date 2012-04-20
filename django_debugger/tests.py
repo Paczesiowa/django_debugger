@@ -4,35 +4,14 @@ from re import match
 
 from django.conf import settings
 from django.test.client import RequestFactory
+from django_debugger.doctest_finder import all_doctests
 from django_debugger.middleware import DebuggerMiddleware
 from django_debugger.tracebacks import TraceBacks
 import django_debugger.utils
 from django_webtest import WebTest
 
 
-# http://stackoverflow.com/questions/1615406/configure-
-# django-to-find-all-doctests-in-all-modules
-# TODO: refactor this to utils, and make it more generic
-def modules_callables(module):
-    return [m for m in dir(module) if callable(getattr(module, m))]
-
-
-def has_doctest(docstring):
-    return ">>>" in docstring
-
-__test__ = {}
-
-for method in modules_callables(django_debugger.utils):
-    docstring = str(getattr(django_debugger.utils, method).__doc__)
-    if has_doctest(docstring):
-        # print "Found doctest(s) " + django_debugger
-        # .utils.__name__ + "." + method
-        # import the method itself, so doctest can find it
-        _temp = __import__(django_debugger.utils.__name__,
-                           globals(), locals(), [method])
-        locals()[method] = getattr(_temp, method)
-
-        __test__[method] = getattr(django_debugger.utils, method)
+__test__ = all_doctests(django_debugger, locals())
 
 
 class DjangoDebuggerTest(WebTest):

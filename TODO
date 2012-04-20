@@ -1,3 +1,2 @@
-* clean evalcontext output for expressions that raise exceptions
 * should eval_expr return mime type json?
-* use code coverage for tests
+* check eval_expr for evaluating multi-line stmts
