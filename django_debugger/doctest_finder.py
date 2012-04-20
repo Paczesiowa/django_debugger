@@ -38,8 +38,3 @@ def all_doctests(module, locals_copy):
                 result[method] = getattr(submodule, method)
 
     return result
-
-
-if __name__ == '__main__':
-    import django_debugger
-    print all_doctests(django_debugger)
