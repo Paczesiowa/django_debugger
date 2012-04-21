@@ -14,3 +14,7 @@ ROOT_URLCONF = 'test_project.urls'
 INSTALLED_APPS = ('django_debugger', 'test_app')
 
 TEST_RUNNER = 'django_coverage.coverage_runner.CoverageRunner'
+
+# Only needed for tests, Django's LiveServerTestCase fails without these
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'

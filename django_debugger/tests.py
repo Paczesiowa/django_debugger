@@ -4,11 +4,14 @@ from re import match
 
 import django_debugger.utils
 from django.conf import settings
+from django.test import LiveServerTestCase
 from django.test.client import RequestFactory
 from django_debugger.doctest_finder import all_doctests
 from django_debugger.middleware import DebuggerMiddleware
 from django_debugger.tracebacks import TraceBacks
 from django_webtest import WebTest
+from pyvirtualdisplay import Display
+from selenium.webdriver.firefox.webdriver import WebDriver
 
 
 __test__ = all_doctests(django_debugger, locals())
@@ -175,3 +178,24 @@ class DjangoDebuggerTest(WebTest):
         err_msg = 'Empty expr parameter'
         self.assertRaisesRegexp(Exception, err_msg, self.app.get,
                                 url, status=500)
+
+
+class SeleniumTests(LiveServerTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.display = Display(visible=0, size=(800, 600))
+        cls.display.start()
+        cls.selenium = WebDriver()
+        settings.DEBUG = True
+        super(SeleniumTests, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(SeleniumTests, cls).tearDownClass()
+        cls.selenium.quit()
+        cls.display.stop()
+
+    def test_login(self):
+        self.selenium.get(self.live_server_url + '/example1')
+        self.assertEqual(self.selenium.title, 'Server Error')
