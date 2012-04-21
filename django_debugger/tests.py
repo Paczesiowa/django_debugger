@@ -2,7 +2,8 @@ import sys
 import urllib
 from re import match
 
-import django_debugger.utils
+import django_debugger
+import django_debugger.utils as utils
 from django.conf import settings
 from django.test import LiveServerTestCase
 from django.test.client import RequestFactory
@@ -178,6 +179,22 @@ class DjangoDebuggerTest(WebTest):
         err_msg = 'Empty expr parameter'
         self.assertRaisesRegexp(Exception, err_msg, self.app.get,
                                 url, status=500)
+
+    def test_traceback_info(self):
+        def foo(x):
+            try:
+                exec 'y = 3; raise Exception()' in {}
+            except:
+                _, _, tb = sys.exc_info()
+            return tb
+
+        result = utils.traceback_info(foo(2))
+        self.assertEqual(2, len(result))
+        self.assertEqual('django_debugger.tests', result[0]['module_name'])
+        self.assertTrue('django_debugger/tests.py' in result[0]['file_path'])
+        self.assertEqual('foo', result[0]['function_name'])
+        self.assertEqual('2', result[0]['local_vars']['x'])
+        self.assertEqual('3', result[1]['global_vars']['y'])
 
 
 class SeleniumTests(LiveServerTestCase):
