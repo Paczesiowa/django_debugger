@@ -1,12 +1,24 @@
+import django_debugger.utils as utils
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render
 from django_debugger.evalcontext import EvalContext
-from django_debugger.utils import get_frame_from_traceback
 
 
 def view_traceback(request, traceback_hash):
-    ctx = {'traceback_hash': traceback_hash}
+    tb_and_exc = request.debugger_middleware_state.tracebacks\
+                        .get_traceback(traceback_hash)
+    if tb_and_exc is None:
+        err_msg = 'No previously recorded exception'
+        err_msg += 'trace matching traceback hash: ' + traceback_hash
+        raise Exception(err_msg)
+
+    traceback, exception = tb_and_exc
+
+    ctx = {'traceback_hash': traceback_hash,
+           'exception_header': utils.format_exception_header(exception),
+           'traceback_info': utils.traceback_info(traceback)}
+
     response = render(request, 'django_debugger/view_traceback.html',
                       ctx, status=500)
     self_url_path = reverse('view_traceback', kwargs={'traceback_hash':
@@ -61,7 +73,7 @@ def eval_expr(request):
     if frame_number < 0:
         raise Exception('Invalid stack frame number: ' + str(frame_number))
 
-    frame = get_frame_from_traceback(traceback, frame_number)
+    frame = utils.get_frame_from_traceback(traceback, frame_number)
     if frame is None:
         err_msg = "Exception stack doesn't have frame number "
         err_msg += str(frame_number)

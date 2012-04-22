@@ -196,6 +196,27 @@ class DjangoDebuggerTest(WebTest):
         self.assertEqual('2', result[0]['local_vars']['x'])
         self.assertEqual('3', result[1]['global_vars']['y'])
 
+    def test_view_traceback(self):
+        self.app.get('/debug/view_traceback', status=404)
+        self.app.get('/debug/view_traceback/', status=404)
+
+        err_msg = 'No previously recorded exception'
+        err_msg += 'trace matching traceback hash: abc'
+        self.assertRaisesRegexp(Exception, err_msg, self.app.get,
+                                '/debug/view_traceback/abc', status=500)
+
+        response = self.app.get('/example1', status=500)
+        # debug_url = response.headers['X-Debug-URL']
+        # traceback_hash = debug_url.split('/')[-1]
+        # self.assertTrue(traceback_hash in response.content)
+        self.assertEqual(response.context['exception_header'],
+                         'Exception: oh noez')
+        self.assertTrue('Exception: oh noez' in response.content)
+        self.assertTrue('test_app.views' in response.content)
+        self.assertTrue('test_app.util' in response.content)
+        self.assertTrue('foo' in response.content)
+        self.assertTrue('example1' in response.content)
+
 
 class SeleniumTests(LiveServerTestCase):
 
